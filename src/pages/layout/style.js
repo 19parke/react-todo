@@ -15,7 +15,7 @@ const S = {};
 
     S.Wrapper = styled.div`
         width: 430px;
-        height: 800px; //혹인 800 자신의 화면에 맞게
+        height: 800px; //혹인 600 자신의 화면에 맞게
         background-color: #fff;
         display: flex;
         flex-direction: column;
