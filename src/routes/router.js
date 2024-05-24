@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom'
 import Main from '../pages/main/Main';
 import PageNotFound from '../pages/error/PageNotFound';
 import Layout from '../pages/layout/Layout';
+import TodoContainer from '../pages/todo/TodoContainer';
 
 const router = createBrowserRouter([
     {
@@ -12,6 +13,10 @@ const router = createBrowserRouter([
             {
                 path:'/', 
                 element : <Main/>
+            },
+            {
+                path:'/todo', 
+                element : <TodoContainer/>
             }
         ]
     }, {

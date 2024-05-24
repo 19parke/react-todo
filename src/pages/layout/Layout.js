@@ -5,7 +5,7 @@ import S from './style';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 
 // 아이콘들
-import {faHouse, faSearch, faBell, faUser} from '@fortawesome/free-solid-svg-icons'
+import {faHouse, faSearch, faBell, faUser, faClipboard} from '@fortawesome/free-solid-svg-icons'
 
 const Layout = () => {
     return (
@@ -36,6 +36,11 @@ const Layout = () => {
                     <NavLink to={'/bell'}>
                         <FontAwesomeIcon icon={faBell} className='icon'/>
                         <p>알림</p>
+                    </NavLink>
+
+                    <NavLink to={'/todo'}>
+                        <FontAwesomeIcon icon={faClipboard} className='icon'/>
+                        <p>할일</p>
                     </NavLink>
 
                     <NavLink to={'/My'}>
