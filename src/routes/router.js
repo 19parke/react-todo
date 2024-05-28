@@ -3,6 +3,8 @@ import Main from '../pages/main/Main';
 import PageNotFound from '../pages/error/PageNotFound';
 import Layout from '../pages/layout/Layout';
 import TodoContainer from '../pages/todo/TodoContainer';
+import SignIn from '../pages/signIn/SignIn';
+import SignUp from '../pages/signUp/SignUp';
 
 const router = createBrowserRouter([
     {
@@ -17,6 +19,14 @@ const router = createBrowserRouter([
             {
                 path:'/todo', 
                 element : <TodoContainer/>
+            },
+            {
+                path:'/signIn', 
+                element : <SignIn/>
+            },
+            {
+                path:'/signUp', 
+                element : <SignUp/>
             }
         ]
     }, {

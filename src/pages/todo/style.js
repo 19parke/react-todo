@@ -45,4 +45,19 @@ const S = {}
         }
     `
 
+    S.Input = styled.input`
+        width: 100%;
+        height: 40px;
+        border: none;
+        background-color: #f5f5f5;
+        padding: 0 16px;
+        margin: 0 0 50px 0;
+        border-radius: 10px;
+        font-size: 14px;
+
+        &::placeholder{
+            color: #b5b5b5;
+        }
+    `
+
 export default S;

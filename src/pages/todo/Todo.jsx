@@ -1,18 +1,68 @@
-import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faPen, faTrash, faX } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react';
 import S from './style';
 
 // props 받기
-const Todo = ({todo, getTodos, setTodos}) => {
+const Todo = ({todo, getTodos, setTodos}) => {      // 의존성 배열 : props로 isTodoUpdate, setIsTodoUpdate 추가
     // console.log(todo, getTodos)
 
     // 비구조화 할당
     const {id, title} = todo;
     // useState(false)로 하면 readonly , 다시 되돌려 놓을 수 없다. 그래서 isChecked 값으로 변경
     const [isChecked, setIsChecked]  = useState(todo.isChecked);
+    // 수정중인지 아닌지의 상태
+    const [isEdit, setIsEdit] = useState(false);
+    // input의 상태
+    const [inputValue, setInputValue] = useState(title);
+
+    // Edit을 변경할 수 있는 함수
+    // 수정모드
+    const handleEdit = () => {
+        // 상태값을 반대로 바꿔주는 함수
+        setIsEdit(!isEdit)
+    }
+    // console.log(isEdit)
     
-    
+    // 타이틀 수정
+    const onChangeInput = (e) => {
+        setInputValue(e.target.value)
+    }
+
+
+    // 수정완료
+    // fetch PUT 메서드를 이용한 title 수정
+    const onChangeUpdateTodo = async() => {
+        // GET빼고 나머지는 옵션이 필요함
+        await fetch(`http://localhost:4000/todo/${id}`, {
+            method: 'PUT',
+
+            // 수정으로 들고가려는 애가 누군지, 정보가 무엇인지
+            headers: {
+                // 들고가려는 데이터 형식이 json으로 보낼 것
+                'Content-Type' : 'application/json'
+            },
+            // body에서 들고가는 값들을 json으로 변환
+            body: JSON.stringify({
+                ...todo,
+                // 화면에 뿌려지고 있는 값인 inputValue가져가기
+                title: inputValue
+            })
+            // 클릭 완료 후 response
+        }).then((response)=>{
+            console.log(response)
+            // response중 ok값이 true이므로 사용가능, 혹은 상태(status) 번호(200)이용
+            if(!response.ok) return console.log(`error ${response}`)
+            // onChangeInput(inputValue) --> 에러
+            setIsEdit(!isEdit)
+            // 의존성 배열 : setIsTodoUpdate(!isTodoUpdate) , isTodoUpdate가 true로 바뀌니 TodoContainer에 있는 useEffect안의 함수 다시 실행
+            // sideEffect 잡기, 쿼리 다시 날리기
+            getTodos().then(setTodos)
+
+        })
+    }
+
+
     //CRUD
     //UPDATE = PUT, 체크리스트 수정 (example 찜하기 버튼에 이용)
     // 비동기 함수 fetch임을 알림 = async
@@ -78,7 +128,7 @@ const Todo = ({todo, getTodos, setTodos}) => {
                     // D. getTodos에서 가져온 애를 set해줘야 하니 ===> 다시 한번 fetch 요청을 보내서 업데이트 된 버젼은 가져오는 것 
                     // 해결책은 setTodos, 함수 로직에서 한 번 더 실행해주게끔 해주는 것
                     // 리액트는 상태가 바뀌어야 업데이트가 되기 때문에 상태를 바꿔줄 수 있는 로직이나 , return 값들 이용해서
-                    getTodos().then(setTodos)
+                    getTodos().then(setTodos) //fetch를 다시 날려줄 수 있는 쿼리가 필요한것 
                 }
             })
 
@@ -91,13 +141,34 @@ const Todo = ({todo, getTodos, setTodos}) => {
             <S.Wrapper>
                 {/* 변경해줄 수 있는 상태 handler를 만들어야 한다. (기본값이 false이니) == handleChecked*/}
                 <input type="checkbox" checked={isChecked} onChange={handleChecked}/>
-                {/* true인 것만 클래스 name주기, class도 연산 가능하다는 것을 기억! */}
-                <S.Title className={isChecked ? "complete" : ""}>
-                    {title}
-                </S.Title>
+                {isEdit ? (
+                    <>
+                        <input className='update-input' type="text" value={inputValue} onChange={onChangeInput}/>
+                    </>
+                ) : (
+                    <>
+                        {/* true인 것만 클래스 name주기, class도 연산 가능하다는 것을 기억! */}
+                        <S.Title className={isChecked ? "complete" : ""}>
+                            {title}
+                        </S.Title>
+                    </>
+                )}
+
             </S.Wrapper>
             <S.Wrapper>
-                <S.Button><FontAwesomeIcon icon={faPen} className='pen'/></S.Button>
+                {/* 상태에 따라 */}
+                {isEdit ? (
+                    // fragment처리 <></> : True일때
+                    <>
+                        <S.Button onClick={onChangeUpdateTodo}><FontAwesomeIcon icon={faCheck} className='check'/></S.Button>
+                        <S.Button onClick={handleEdit}><FontAwesomeIcon icon={faX} className='exit'/></S.Button>
+                    </>
+                ) : (
+                    // False일때
+                    <>
+                        <S.Button onClick={handleEdit}><FontAwesomeIcon icon={faPen} className='pen'/></S.Button>
+                    </>
+                ) }
                 <S.Button onClick={handleRemoveTodo}><FontAwesomeIcon icon={faTrash} className='trash'/></S.Button>
             </S.Wrapper>
         </S.Li>
