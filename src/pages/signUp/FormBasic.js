@@ -1,12 +1,13 @@
 import React from 'react';
-
+//원래는 hook form을 사용하는 건데 
+// 기본적으로 사용하는 방법
 const FormBasic = () => {
 
     const onSubmitHandle = (e) => {
         e.preventDefault()
         console.log('submit 막힘',e)
 
-        //form태그에서 단일 데이터 가져오기
+        //form태그에서 단일 데이터 가져오기,Form 태그 프로토타입
         const formData = new FormData(e.target)
         const id = formData.get('id')
         // const password = formData.get('password')
